@@ -1,0 +1,26 @@
+{
+  "name": "moving-balls",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@react-spring/three": "^9.5.5",
+    "@react-spring/web": "^9.5.5",
+    "@react-three/fiber": "^8.9.1",
+    "@types/node": "18.11.9",
+    "@types/react": "18.0.25",
+    "@types/react-dom": "18.0.8",
+    "eslint": "8.27.0",
+    "eslint-config-next": "13.0.2",
+    "next": "13.0.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "three": "^0.146.0",
+    "typescript": "4.8.4"
+  }
+}
