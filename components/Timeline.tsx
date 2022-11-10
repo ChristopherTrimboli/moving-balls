@@ -1,7 +1,6 @@
 import Slider from 'rc-slider'
 import styled from 'styled-components'
 import 'rc-slider/assets/index.css';
-import { useEffect, useState } from 'react';
 
 const TimelineWrapper = styled.div`
     position: fixed;
@@ -42,6 +41,7 @@ const DurationInput = styled.input`
 export interface TimelineProps {
     duration: number
     isPaused: boolean
+    currentTime: number
     onPlay: () => void
     onPause: () => void
     onDurationChange: (duration: number) => void
@@ -50,21 +50,11 @@ export interface TimelineProps {
 export default function Timeline({
     duration,
     isPaused,
+    currentTime,
     onPlay,
     onPause,
-    onDurationChange
+    onDurationChange,
 }: TimelineProps) {
-    const [currentTime, setCurrentTime] = useState(0)
-
-    useEffect(() => {
-        if (isPaused) {
-            return
-        }
-        const interval = setInterval(() => {
-            setCurrentTime(currentTime => currentTime < duration * 2 ? currentTime + 100 : 0)
-        }, 100)
-        return () => clearInterval(interval)
-    }, [duration, isPaused])
 
     const handlePlayPause = () => {
         isPaused ? onPlay() : onPause()
@@ -78,7 +68,7 @@ export default function Timeline({
             <Slider
                 min={0}
                 step={100}
-                max={duration * 2}
+                max={duration}
                 defaultValue={0}
                 value={currentTime}
                 onChange={value => console.log(value)}

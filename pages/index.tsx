@@ -1,12 +1,73 @@
 import Head from 'next/head'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Scene from '../components/Scene'
 import Timeline from '../components/Timeline'
 
+export interface BallData {
+  color: string
+  fromPosition: [number, number, number]
+  toPosition: [number, number, number]
+}
+
+const balls: BallData[] = [
+  {
+    color: '#60CCFD',
+    fromPosition: [-1.5, 0, 0],
+    toPosition: [-1.5, -1, 0]
+  },
+  {
+    color: '#FFB966',
+    fromPosition: [-0.5, 0, 0],
+    toPosition: [-0.5, 1, 0]
+  },
+  {
+    color: '#92CF94',
+    fromPosition: [0.5, 0, 0],
+    toPosition: [0.5, -1, 0]
+  },
+  {
+    color: '#F089AF',
+    fromPosition: [1.5, 0, 0],
+    toPosition: [1.5, 1, 0]
+  }
+]
+
+const BASE_DURATION = 3 * 1000
+const BASE_STAGGER_DURATION = 0.5 * 1000
+
+const STAGGER_DURATION = 0.5 * 1000
+
+function getTotalStaggerDuration(balls: BallData[], staggerDuration: number): number {
+  let totalStagger = 0;
+  balls.forEach((ball, index) => {
+    totalStagger += (index * staggerDuration);
+  })
+  return totalStagger;
+}
+
 export default function Index() {
-  const [duration, setDuration] = useState(3 * 1000)
+  const [duration, setDuration] = useState(BASE_DURATION + getTotalStaggerDuration(balls, STAGGER_DURATION))
+  const [stagger, setStagger] = useState(BASE_STAGGER_DURATION)
+
   const [isPaused, setIsPaused] = useState(false)
   const [is3D, setIs3D] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+
+  const handleSetDuration = (duration: number) => {
+    const multiplier = BASE_DURATION / duration
+    setStagger(multiplier * BASE_STAGGER_DURATION)
+    setDuration(duration)
+  }
+
+  useEffect(() => {
+    if (isPaused) {
+      return
+    }
+    const interval = setInterval(() => {
+      setCurrentTime(currentTime => currentTime < duration ? currentTime + 100 : 0)
+    }, 100)
+    return () => clearInterval(interval)
+  }, [duration, isPaused])
 
   return (
     <>
@@ -23,7 +84,10 @@ export default function Index() {
       <Scene
         duration={duration}
         isPaused={isPaused}
+        balls={balls}
         is3D={is3D}
+        setCurrentTime={setCurrentTime}
+        stagger={stagger}
       />
 
       <Timeline
@@ -31,7 +95,8 @@ export default function Index() {
         isPaused={isPaused}
         onPlay={() => setIsPaused(false)}
         onPause={() => setIsPaused(true)}
-        onDurationChange={setDuration}
+        onDurationChange={handleSetDuration}
+        currentTime={currentTime}
       />
     </>
   )
