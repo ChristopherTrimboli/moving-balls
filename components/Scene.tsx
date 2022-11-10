@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Ball from './Ball'
 import { easings, useSprings } from '@react-spring/three'

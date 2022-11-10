@@ -35,8 +35,6 @@ const balls: BallData[] = [
 const BASE_DURATION = 3 * 1000
 const BASE_STAGGER_DURATION = 0.5 * 1000
 
-const STAGGER_DURATION = 0.5 * 1000
-
 function getTotalStaggerDuration(balls: BallData[], staggerDuration: number): number {
   let totalStagger = 0;
   balls.forEach((ball, index) => {
@@ -46,7 +44,7 @@ function getTotalStaggerDuration(balls: BallData[], staggerDuration: number): nu
 }
 
 export default function Index() {
-  const [duration, setDuration] = useState(BASE_DURATION + getTotalStaggerDuration(balls, STAGGER_DURATION))
+  const [duration, setDuration] = useState(BASE_DURATION + getTotalStaggerDuration(balls, BASE_STAGGER_DURATION))
   const [stagger, setStagger] = useState(BASE_STAGGER_DURATION)
 
   const [isPaused, setIsPaused] = useState(false)
