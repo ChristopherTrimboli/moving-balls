@@ -1,6 +1,6 @@
 import { Ref } from 'react'
 import { animated, SpringValue } from '@react-spring/three'
-import { BufferGeometry, Material, Mesh } from 'three'
+import { BufferGeometry, DoubleSide, Material, Mesh } from 'three'
 
 export type BallMesh = Mesh<BufferGeometry, Material | Material[]>
 export type BallRef = Ref<BallMesh>
@@ -12,6 +12,7 @@ export interface BallProps {
     radius?: number
     segments?: number
     scale?: number
+    is3D?: boolean
 }
 
 export default function Ball({
@@ -20,7 +21,8 @@ export default function Ball({
     position = [0, 0, 0],
     radius = 0.25,
     segments = 100,
-    scale = 1
+    scale = 1,
+    is3D = false
 }: BallProps) {
 
     return (
@@ -29,8 +31,8 @@ export default function Ball({
             position={position}
             ref={ballRef}
         >
-            <circleGeometry args={[radius, segments]} />
-            <meshPhongMaterial color={color} />
+            {is3D ? <sphereGeometry args={[radius, segments]} /> : <circleGeometry args={[radius, segments]} />}
+            <meshPhongMaterial color={color} side={DoubleSide} />
         </animated.mesh>
     )
 }

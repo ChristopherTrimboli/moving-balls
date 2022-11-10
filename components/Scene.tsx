@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Ball, { BallMesh } from './Ball'
 import { easings, useSprings } from '@react-spring/three'
+import OrbitCamera from './OrbitCamera'
 
 interface BallData {
     color: string
@@ -35,11 +36,13 @@ const balls: BallData[] = [
 interface SceneProps {
     duration: number
     isPaused: boolean
+    is3D: boolean
 }
 
 export default function Scene({
     duration,
-    isPaused
+    isPaused,
+    is3D
 }: SceneProps) {
     const ball1 = useRef<BallMesh>(null)
     const ball2 = useRef<BallMesh>(null)
@@ -76,6 +79,7 @@ export default function Scene({
         <Canvas>
             <ambientLight intensity={1} />
             <directionalLight />
+            <OrbitCamera />
             <group>
                 {
                     springs.map(({ position }, index: number) => {
@@ -83,6 +87,7 @@ export default function Scene({
                             <Ball
                                 position={position}
                                 color={balls[index].color}
+                                is3D={is3D}
                                 ballRef={ballRefs[index]}
                                 key={index}
                             />
