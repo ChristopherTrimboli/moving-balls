@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 
 const TimelineWrapper = styled.div`
     position: fixed;
+    align-items: center;
     width: 100%;
     bottom: 20px;
     display: flex;
@@ -13,7 +14,7 @@ const TimelineWrapper = styled.div`
 `
 
 const PlayPauseButton = styled.div`
-    padding: 0.25rem 1rem;
+    padding: 0.5rem 1rem;
     width: 5rem;
     text-align: center;
     background: #fff;
@@ -23,11 +24,27 @@ const PlayPauseButton = styled.div`
     border-radius: 8px;
 `
 
+const DurationWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+
+`
+
+const DurationLabel = styled.label`
+    font-weight: 500;
+`
+
+const DurationInput = styled.input`
+    padding: 0.5rem 1rem;
+    width: 8rem;
+`
+
 export interface TimelineProps {
     duration: number
     isPaused: boolean
     onPlay: () => void
     onPause: () => void
+    onDurationChange: (duration: number) => void
 }
 
 export default function Timeline({
@@ -35,6 +52,7 @@ export default function Timeline({
     isPaused,
     onPlay,
     onPause,
+    onDurationChange
 }: TimelineProps) {
     const [currentTime, setCurrentTime] = useState(0)
 
@@ -82,6 +100,16 @@ export default function Timeline({
                     transition: 'left 0.1s ease-in-out'
                 }}
             />
+            <DurationWrapper>
+                <DurationLabel>Duration (s)</DurationLabel>
+                <DurationInput
+                    type="number"
+                    defaultValue={duration / 1000}
+                    step={0.1}
+                    onChange={e => onDurationChange(Number(e.target.value) * 1000)}
+                />
+            </DurationWrapper>
+
         </TimelineWrapper>
     )
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Ball, { BallMesh } from './Ball'
 import { easings, useSprings } from '@react-spring/three'
@@ -56,17 +56,21 @@ export default function Scene({
             { position: balls[i].toPosition },
             { position: balls[i].fromPosition },
         ],
-        loop: true,
-        pause: isPaused,
-        config: {
-            duration,
-            easing: easings.easeInOutCubic
-        }
+        loop: true
     }))
 
     useEffect(() => {
         isPaused ? api.pause() : api.resume()
-    }, [isPaused, api, springs])
+    }, [isPaused, api])
+
+    useEffect(() => {
+        api.start({
+            config: {
+                duration,
+                easing: easings.easeInOutCubic
+            }
+        })
+    }, [duration, api])
 
     return (
         <Canvas>

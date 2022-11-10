@@ -25,6 +25,7 @@ export default function Index() {
         isPaused={isPaused}
         onPlay={() => setIsPaused(false)}
         onPause={() => setIsPaused(true)}
+        onDurationChange={setDuration}
       />
     </>
   )
