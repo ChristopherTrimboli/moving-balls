@@ -1,79 +1,60 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
-import Ball, { BallMesh } from './Ball'
+import Ball from './Ball'
 import { easings, useSprings } from '@react-spring/three'
 import OrbitCamera from './OrbitCamera'
-
-interface BallData {
-    color: string
-    fromPosition: [number, number, number]
-    toPosition: [number, number, number]
-}
-
-const balls: BallData[] = [
-    {
-        color: '#60CCFD',
-        fromPosition: [-1.5, 0, 0],
-        toPosition: [-1.5, -1, 0]
-    },
-    {
-        color: '#FFB966',
-        fromPosition: [-0.5, 0, 0],
-        toPosition: [-0.5, 1, 0]
-    },
-    {
-        color: '#92CF94',
-        fromPosition: [0.5, 0, 0],
-        toPosition: [0.5, -1, 0]
-    },
-    {
-        color: '#F089AF',
-        fromPosition: [1.5, 0, 0],
-        toPosition: [1.5, 1, 0]
-    }
-]
+import { BallData } from '../pages/index'
 
 interface SceneProps {
     duration: number
     isPaused: boolean
     is3D: boolean
+    balls: BallData[]
+    stagger: number
+    setCurrentTime: (currentTime: number) => void
 }
 
 export default function Scene({
     duration,
     isPaused,
-    is3D
+    is3D,
+    balls,
+    stagger,
+    setCurrentTime
 }: SceneProps) {
-    const ball1 = useRef<BallMesh>(null)
-    const ball2 = useRef<BallMesh>(null)
-    const ball3 = useRef<BallMesh>(null)
-    const ball4 = useRef<BallMesh>(null)
+    const [isFullyRested, setIsFullyRested] = useState(false)
 
-    const ballRefs = [ball1, ball2, ball3, ball4]
-
-    const [springs, api] = useSprings(ballRefs.length, i => ({
+    const [springs, api] = useSprings(balls.length, i => ({
         from: {
             position: balls[i].fromPosition,
         },
         to: [
-            { position: balls[i].toPosition },
-            { position: balls[i].fromPosition },
+            {
+                position: balls[i].toPosition,
+                onStart(): void {
+                    if (i === 0) {
+                        setIsFullyRested(false)
+                        setCurrentTime(0)
+                    }
+                },
+            },
+            {
+                position: balls[i].fromPosition,
+                onRest(): void {
+                    if (i === balls.length - 1) {
+                        setIsFullyRested(true)
+                    }
+                }
+            },
         ],
-        loop: true
-    }))
-
-    useEffect(() => {
-        isPaused ? api.pause() : api.resume()
-    }, [isPaused, api])
-
-    useEffect(() => {
-        api.start({
-            config: {
-                duration,
-                easing: easings.easeInOutCubic
-            }
-        })
-    }, [duration, api])
+        config: {
+            duration: (duration / 2) - stagger,
+            easing: easings.easeInOutCubic
+        },
+        delay: i > 0 ? i * stagger : 0,
+        reset: isFullyRested,
+        pause: isPaused,
+    }), [balls, isFullyRested, isPaused, setCurrentTime, stagger, duration])
 
     return (
         <Canvas>
@@ -88,7 +69,6 @@ export default function Scene({
                                 position={position}
                                 color={balls[index].color}
                                 is3D={is3D}
-                                ballRef={ballRefs[index]}
                                 key={index}
                             />
                         )
