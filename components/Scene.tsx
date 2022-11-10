@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Ball, { BallMesh } from './Ball'
-import { easings, useTrail, useSprings } from '@react-spring/three'
+import { easings, useSprings } from '@react-spring/three'
 
 interface BallData {
     color: string
@@ -32,7 +32,15 @@ const balls: BallData[] = [
     }
 ]
 
-export default function Scene() {
+interface SceneProps {
+    duration: number
+    isPaused: boolean
+}
+
+export default function Scene({
+    duration,
+    isPaused
+}: SceneProps) {
     const ball1 = useRef<BallMesh>(null)
     const ball2 = useRef<BallMesh>(null)
     const ball3 = useRef<BallMesh>(null)
@@ -40,54 +48,31 @@ export default function Scene() {
 
     const ballRefs = [ball1, ball2, ball3, ball4]
 
-    // const [trails, api] = useTrail(ballRefs.length, i => ({
-    //     from: {
-    //         position: balls[i].fromPosition
-    //     },
-    //     to: [
-    //         { position: balls[i].toPosition },
-    //         { position: balls[i].fromPosition }
-    //     ],
-    //     loop: true,
-    //     delay: 50 * i,
-    //     config: {
-    //         duration: (3 * 1000) + 50 * i,
-    //         easing: easings.easeInOutCubic
-    //     }
-    // }))
-
     const [springs, api] = useSprings(ballRefs.length, i => ({
         from: {
-            position: balls[i].fromPosition
+            position: balls[i].fromPosition,
         },
         to: [
             { position: balls[i].toPosition },
-            { position: balls[i].fromPosition }
+            { position: balls[i].fromPosition },
         ],
         loop: true,
+        pause: isPaused,
         config: {
-            duration: 3 * 1000,
+            duration,
             easing: easings.easeInOutCubic
         }
     }))
+
+    useEffect(() => {
+        isPaused ? api.pause() : api.resume()
+    }, [isPaused, api, springs])
 
     return (
         <Canvas>
             <ambientLight intensity={1} />
             <directionalLight />
             <group>
-                {/* {
-                    trails.map(({ position }, index: number) => {
-                        return (
-                            <Ball
-                                position={position}
-                                color={balls[index].color}
-                                ballRef={ballRefs[index]}
-                                key={index}
-                            />
-                        )
-                    })
-                } */}
                 {
                     springs.map(({ position }, index: number) => {
                         return (
