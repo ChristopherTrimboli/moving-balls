@@ -12,23 +12,23 @@ interface BallData {
 const balls: BallData[] = [
     {
         color: '#60CCFD',
-        fromPosition: [-2, 0, 0],
-        toPosition: [-2, -1, 0]
+        fromPosition: [-1.5, 0, 0],
+        toPosition: [-1.5, -1, 0]
     },
     {
         color: '#FFB966',
-        fromPosition: [-1, 0, 0],
-        toPosition: [-1, 1, 0]
+        fromPosition: [-0.5, 0, 0],
+        toPosition: [-0.5, 1, 0]
     },
     {
         color: '#92CF94',
-        fromPosition: [0, 0, 0],
-        toPosition: [0, -1, 0]
+        fromPosition: [0.5, 0, 0],
+        toPosition: [0.5, -1, 0]
     },
     {
         color: '#F089AF',
-        fromPosition: [1, 0, 0],
-        toPosition: [1, 1, 0]
+        fromPosition: [1.5, 0, 0],
+        toPosition: [1.5, 1, 0]
     }
 ]
 
